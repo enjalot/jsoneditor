@@ -1,8 +1,13 @@
 
-.jsoneditor .menu2 {
+.jsoneditor .new-auto {
+  background-position: -120px -24px;
 }
-
-
+.jsoneditor .new-array {
+  background-position: -96px -24px;
+}
+.jsoneditor .new-object {
+  background-position: -72px -24px;
+}
 .jsoneditor .field,
 .jsoneditor .value,
 .jsoneditor .readonly {

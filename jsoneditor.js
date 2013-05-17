@@ -2506,6 +2506,7 @@ Node.prototype.getDom = function() {
 
     
     //enjalot
+    //adds buttons to the row
     if (this.editor.mode.edit) {
       var newAuto = document.createElement('button');
       var newArray = document.createElement('button');
@@ -2514,16 +2515,13 @@ Node.prototype.getDom = function() {
       newAuto.className = "new-auto";
       newArray.className = "new-array";
       newObject.className = "new-object";
-      newString.className = "new-string";
       dom.auto = newAuto
       dom.array = newArray
       dom.object = newObject
-      dom.string = newString
       if(!this.childs) {
         tdField.appendChild(dom.auto)
         tdField.appendChild(dom.array)
         tdField.appendChild(dom.object)
-        tdField.appendChild(dom.string)
       }
     }
     
@@ -3095,6 +3093,7 @@ Node.prototype.onEvent = function (event) {
         console.log("sup!")
     }
     //enjalot
+    //for row buttons
     if(type == "click" && target == dom.auto) {
       newNodeType("auto")
     }
@@ -3104,10 +3103,6 @@ Node.prototype.onEvent = function (event) {
     if(type == "click" && target == dom.object) {
       newNodeType("object")
     }
-    if(type == "click" && target == dom.string) {
-      newNodeType("string")
-    }
-
     function newNodeType(type) {
       var appender = node.append;
       if(!node.append) {
@@ -3119,7 +3114,7 @@ Node.prototype.onEvent = function (event) {
         parentNode.removeChild(parentNode.childNodes[1])
         parentNode.removeChild(parentNode.childNodes[1])
         parentNode.removeChild(parentNode.childNodes[1])
-        parentNode.removeChild(parentNode.childNodes[1])
+        //parentNode.removeChild(parentNode.childNodes[1])
       }
       if(type === "auto") {
         appender._onAppend('', '', 'auto');
@@ -3127,8 +3122,6 @@ Node.prototype.onEvent = function (event) {
         appender._onAppend('', []);
       } else if(type === "object") {
         appender._onAppend('', {});
-      } else if(type === "string") {
-        appender._onAppend('', '', 'string');
       }
     }
 
@@ -4313,23 +4306,20 @@ AppendNode.prototype.getDom = function () {
     dom.text = domText;
 
     //enjalot
+    //for the append row buttons
     if (this.editor.mode.edit) {
       var newAuto = document.createElement('button');
       var newArray = document.createElement('button');
       var newObject = document.createElement('button');
-      var newString = document.createElement('button');
       newAuto.className = "new-auto";
       newArray.className = "new-array";
       newObject.className = "new-object";
-      newString.className = "new-string";
       dom.auto = newAuto
       dom.array = newArray
       dom.object = newObject
-      dom.string = newString
       dom.td.appendChild(dom.auto)
       dom.td.appendChild(dom.array)
       dom.td.appendChild(dom.object)
-      dom.td.appendChild(dom.string)
     }
     
     this.updateDom();
@@ -4352,7 +4342,6 @@ AppendNode.prototype.updateDom = function () {
     if (domText) {
         domText.innerHTML = '(empty ' + this.parent.type + ')';
     }
-    
 
     // attach or detach the contents of the append node:
     // hide when the parent has childs, show when the parent has no childs
@@ -4484,6 +4473,7 @@ AppendNode.prototype.onEvent = function (event) {
     }
     
     //enjalot
+    //this is for the append node, so only when you have an empty array or object
     if (type == 'click' && target == dom.auto) {
       this._onAppend('', '', 'auto');
     }
@@ -4493,11 +4483,6 @@ AppendNode.prototype.onEvent = function (event) {
     if (type == 'click' && target == dom.object) {
       this._onAppend('', {} );
     }
-    if (type == 'click' && target == dom.string) {
-      this._onAppend('', '', 'string');
-    }
-    
-
 
     if (type == 'keydown') {
         this.onKeyDown(event);
