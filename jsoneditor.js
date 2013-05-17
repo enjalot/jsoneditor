@@ -2495,6 +2495,7 @@ Node.prototype.getDom = function() {
         menu.title = 'Click to open the actions menu (Ctrl+M)';
         tdMenu.appendChild(dom.menu);
         dom.tr.appendChild(tdMenu);
+        
     }
 
     // create tree and field
@@ -2503,6 +2504,29 @@ Node.prototype.getDom = function() {
     dom.tree = this._createDomTree();
     tdField.appendChild(dom.tree);
 
+    
+    //enjalot
+    if (this.editor.mode.edit) {
+      var newAuto = document.createElement('button');
+      var newArray = document.createElement('button');
+      var newObject = document.createElement('button');
+      var newString = document.createElement('button');
+      newAuto.className = "new-auto";
+      newArray.className = "new-array";
+      newObject.className = "new-object";
+      newString.className = "new-string";
+      dom.auto = newAuto
+      dom.array = newArray
+      dom.object = newObject
+      dom.string = newString
+      if(!this.childs) {
+        tdField.appendChild(dom.auto)
+        tdField.appendChild(dom.array)
+        tdField.appendChild(dom.object)
+        tdField.appendChild(dom.string)
+      }
+    }
+    
     this.updateDom({'updateIndexes': true});
 
     return dom.tr;
@@ -2809,6 +2833,9 @@ Node.prototype.updateDom = function (options) {
     if (domTree) {
         domTree.style.marginLeft = this.getLevel() * 24 + 'px';
     }
+    if(this.dom.auto) {
+      this.dom.auto.style.marginLeft = 24 + this.getLevel() * 24 + 'px';
+    }
 
     // update field
     var domField = this.dom.field;
@@ -3065,6 +3092,44 @@ Node.prototype.onEvent = function (event) {
             highlighter.unlock();
             highlighter.unhighlight();
         });
+        console.log("sup!")
+    }
+    //enjalot
+    if(type == "click" && target == dom.auto) {
+      newNodeType("auto")
+    }
+    if(type == "click" && target == dom.array) {
+      newNodeType("array")
+    }
+    if(type == "click" && target == dom.object) {
+      newNodeType("object")
+    }
+    if(type == "click" && target == dom.string) {
+      newNodeType("string")
+    }
+
+    function newNodeType(type) {
+      var appender = node.append;
+      if(!node.append) {
+        appender = node;
+        console.log("no append")
+        //TODO: this is pretty hacky. need to navigate up and remove the plus button
+        var parentNode = dom.tree.parentNode;
+        console.log("parentNode", parentNode.childNodes)
+        parentNode.removeChild(parentNode.childNodes[1])
+        parentNode.removeChild(parentNode.childNodes[1])
+        parentNode.removeChild(parentNode.childNodes[1])
+        parentNode.removeChild(parentNode.childNodes[1])
+      }
+      if(type === "auto") {
+        appender._onAppend('', '', 'auto');
+      } else if(type === "array") {
+        appender._onAppend('', []);
+      } else if(type === "object") {
+        appender._onAppend('', {});
+      } else if(type === "string") {
+        appender._onAppend('', '', 'string');
+      }
     }
 
     // expand events
@@ -3772,6 +3837,9 @@ Node.prototype._previousElement = function (elem) {
             if (dom.drag) {
                 return dom.drag;
             }
+        //enjalot
+        case dom.auto:
+            return dom.auto
         // intentional fall through
         default:
             return null;
@@ -4244,6 +4312,26 @@ AppendNode.prototype.getDom = function () {
     dom.td = tdAppend;
     dom.text = domText;
 
+    //enjalot
+    if (this.editor.mode.edit) {
+      var newAuto = document.createElement('button');
+      var newArray = document.createElement('button');
+      var newObject = document.createElement('button');
+      var newString = document.createElement('button');
+      newAuto.className = "new-auto";
+      newArray.className = "new-array";
+      newObject.className = "new-object";
+      newString.className = "new-string";
+      dom.auto = newAuto
+      dom.array = newArray
+      dom.object = newObject
+      dom.string = newString
+      dom.td.appendChild(dom.auto)
+      dom.td.appendChild(dom.array)
+      dom.td.appendChild(dom.object)
+      dom.td.appendChild(dom.string)
+    }
+    
     this.updateDom();
 
     return trAppend;
@@ -4259,11 +4347,12 @@ AppendNode.prototype.updateDom = function () {
         tdAppend.style.paddingLeft = (this.getLevel() * 24 + 26) + 'px';
         // TODO: not so nice hard coded offset
     }
-
+    
     var domText = dom.text;
     if (domText) {
         domText.innerHTML = '(empty ' + this.parent.type + ')';
     }
+    
 
     // attach or detach the contents of the append node:
     // hide when the parent has childs, show when the parent has no childs
@@ -4393,6 +4482,22 @@ AppendNode.prototype.onEvent = function (event) {
             highlighter.unhighlight();
         });
     }
+    
+    //enjalot
+    if (type == 'click' && target == dom.auto) {
+      this._onAppend('', '', 'auto');
+    }
+    if (type == 'click' && target == dom.array) {
+      this._onAppend('', [] );
+    }
+    if (type == 'click' && target == dom.object) {
+      this._onAppend('', {} );
+    }
+    if (type == 'click' && target == dom.string) {
+      this._onAppend('', '', 'string');
+    }
+    
+
 
     if (type == 'keydown') {
         this.onKeyDown(event);
